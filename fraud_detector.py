@@ -2,15 +2,12 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-from matplotlib import gridspec
 from sklearn.model_selection import StratifiedKFold, cross_val_score
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
 
 # Load the dataset from the csv file using pandas
-# best way is to mount the drive on colab and 
-# copy the path for the csv file
 data = pd.read_csv("creditcard.csv")
 
 # Determine number of fraud cases in dataset
@@ -21,14 +18,11 @@ print(outlierFraction)
 print('Fraud Cases: {}'.format(len(data[data['Class'] == 1])))
 print('Valid Transactions: {}'.format(len(data[data['Class'] == 0])))
 
-# dividing the X and the Y from the dataset
+# Dividing the X and Y from the dataset
 X = data.drop(['Class'], axis = 1)
 Y = data["Class"]
 
-# Scale the features
-scaler = StandardScaler()
-X_scaled = scaler.fit_transform(X)
-
+# Define models to be compared
 models = {
     "Random Forest (Unscaled)": RandomForestClassifier(class_weight='balanced'),
     "Logistic Regression (Scaled)": LogisticRegression(class_weight='balanced'),
@@ -38,6 +32,23 @@ models = {
 # Define K-Fold Cross-Validation
 kfold = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
 
+# Store F1 scores in a list for boxplot
+scores_data = []
+
+# Run cross-validation for each model and store the F1 scores
 for name, model in models.items():
-    scores = cross_val_score(model, X_scaled if 'Scaled' in name else X, Y, cv=kfold, scoring='f1')
-    print(f"{name}: Average F1 Score = {scores.mean():.4f}, Std Dev = {scores.std():.4f}")
+    scores = cross_val_score(model, X, Y, cv=kfold, scoring='f1')
+    for score in scores:
+        scores_data.append({'Model': name, 'F1 Score': score})
+
+# Convert scores to DataFrame for easier plotting
+scores_df = pd.DataFrame(scores_data)
+
+# Plot the box plot
+plt.figure(figsize=(10, 6))
+sns.boxplot(x='Model', y='F1 Score', data=scores_df, palette="Set2")
+plt.title('Model Performance Across Cross-Validation Folds (F1 Score)')
+plt.xlabel('Model')
+plt.ylabel('F1 Score')
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+plt.show()
