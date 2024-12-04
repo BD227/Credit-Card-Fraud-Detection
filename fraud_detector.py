@@ -4,8 +4,9 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from matplotlib import gridspec
 from sklearn.model_selection import StratifiedKFold, cross_val_score
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
 
 # Load the dataset from the csv file using pandas
 # best way is to mount the drive on colab and 
@@ -24,16 +25,19 @@ print('Valid Transactions: {}'.format(len(data[data['Class'] == 0])))
 X = data.drop(['Class'], axis = 1)
 Y = data["Class"]
 
-# random forest model creation
-rfc = RandomForestClassifier(class_weight='balanced')
+# Scale the features
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+models = {
+    "Random Forest (Unscaled)": RandomForestClassifier(class_weight='balanced'),
+    "Logistic Regression (Scaled)": LogisticRegression(class_weight='balanced'),
+    "Gradient Boosting (Unscaled)": GradientBoostingClassifier()
+}
 
 # Define K-Fold Cross-Validation
 kfold = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
 
-# Perform Cross-Validation
-cv_scores = cross_val_score(rfc, X.values, Y.values, cv=kfold, scoring='f1')
-
-# Print the results
-print(f'F1 Scores for each fold: {cv_scores}')
-print(f'Average F1 Score: {cv_scores.mean():.4f}')
-print(f'Standard Deviation: {cv_scores.std():.4f}')
+for name, model in models.items():
+    scores = cross_val_score(model, X_scaled if 'Scaled' in name else X, Y, cv=kfold, scoring='f1')
+    print(f"{name}: Average F1 Score = {scores.mean():.4f}, Std Dev = {scores.std():.4f}")
