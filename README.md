@@ -1,4 +1,4 @@
-# Credit-Card-Fraud-Detection
+# Credit Card Fraud Detection
 Credit card fraud detection using Logistic Regression, Random Forest, and Gradient Boosting. This project compares each technique and demonstrates the importance of properly handling imbalanced data sets.
 
 ## Results
