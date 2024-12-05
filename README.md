@@ -2,23 +2,27 @@
 Credit card fraud detection using Logistic Regression, Random Forest, and Gradient Boosting. This project compares each technique and demonstrates the importance of properly handling imbalanced data sets.
 
 ## Results
-=== Sampling Technique: No Sampling ===
+### === Sampling Technique: No Sampling ===
+
 Class distribution: Counter({0: 284315, 1: 492})
-Training Logistic Regression with No Sampling...
+
 Logistic Regression (No Sampling): Average F1 Score = 0.7290, Std Dev = 0.0324
-Training Random Forest with No Sampling...
+
 Random Forest (No Sampling): Average F1 Score = 0.8510, Std Dev = 0.0208
-Training Gradient Boosting with No Sampling...
+
 Gradient Boosting (No Sampling): Average F1 Score = 0.6615, Std Dev = 0.1608
 
-=== Sampling Technique: Undersampling ===
+### === Sampling Technique: Undersampling ===
+
 Class distribution: Counter({0: 492, 1: 492})
-Training Logistic Regression with Undersampling...
+
 Logistic Regression (Undersampling): Average F1 Score = 0.9397, Std Dev = 0.0182
-Training Random Forest with Undersampling...
+
 Random Forest (Undersampling): Average F1 Score = 0.9337, Std Dev = 0.0172
-Training Gradient Boosting with Undersampling...
+
 Gradient Boosting (Undersampling): Average F1 Score = 0.9404, Std Dev = 0.0169
+
+![image](https://github.com/user-attachments/assets/542f0851-d094-4ada-9dd6-7ce39d4cd24a)
 
 ## Details
 To begin, we apply a standard scalar to time and amount to match the rest of the data.
